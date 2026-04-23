@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Feedback Dashboards</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f5f7fb;
+        --card: #ffffff;
+        --text: #222b45;
+        --muted: #7d89a8;
+        --brand: #3366ff;
+        --brand-soft: #e8edff;
+        --border: #e7eaf3;
+        --good: #1f9d55;
+        --warn: #dd6b20;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      .page {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 32px 20px 40px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(1.4rem, 1.2rem + 1.5vw, 2rem);
+      }
+
+      .subtitle {
+        margin: 0 0 24px;
+        color: var(--muted);
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 6px;
+        margin-bottom: 24px;
+        overflow-x: auto;
+      }
+
+      .tab {
+        border: 0;
+        border-radius: 9px;
+        padding: 10px 14px;
+        font-size: 0.95rem;
+        color: var(--muted);
+        background: transparent;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .tab.active {
+        color: var(--brand);
+        background: var(--brand-soft);
+        font-weight: 600;
+      }
+
+      .dashboard {
+        display: grid;
+        gap: 16px;
+      }
+
+      .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 12px;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+      }
+
+      .card-title {
+        margin: 0 0 8px;
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+
+      .kpi-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .delta {
+        margin-top: 8px;
+        font-size: 0.85rem;
+      }
+
+      .delta.good {
+        color: var(--good);
+      }
+
+      .delta.warn {
+        color: var(--warn);
+      }
+
+      .section-title {
+        margin: 2px 0 10px;
+        font-size: 1.05rem;
+      }
+
+      .feedback-list {
+        margin: 0;
+        padding-left: 18px;
+        line-height: 1.45;
+      }
+
+      .feedback-list li + li {
+        margin-top: 6px;
+      }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .tag {
+        font-size: 0.82rem;
+        border: 1px solid var(--border);
+        background: #f9faff;
+        border-radius: 999px;
+        padding: 6px 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1>Дашборды продуктового фидбека</h1>
+      <p class="subtitle">Сводка ключевых пользовательских метрик и инсайтов по продуктам.</p>
+
+      <header class="tabs" id="tabs" aria-label="Выбор продукта"></header>
+
+      <section class="dashboard" id="dashboard" aria-live="polite"></section>
+    </main>
+
+    <script>
+      const dashboards = {
+        Tracker: {
+          period: "Последние 30 дней",
+          kpis: [
+            { label: "NPS", value: "42", delta: "+5 п.п. к прошлому месяцу", tone: "good" },
+            { label: "CSAT", value: "4.4 / 5", delta: "+0.2 за квартал", tone: "good" },
+            { label: "Запросов в саппорт", value: "126", delta: "-18% MoM", tone: "good" },
+            { label: "Feature adoption", value: "68%", delta: "+7% после релиза", tone: "good" }
+          ],
+          positives: [
+            "Пользователи отмечают удобный канбан и быстрый поиск задач.",
+            "Похвала за напоминания и интеграцию с календарем.",
+            "Команды стали чаще использовать автоматические правила статусов."
+          ],
+          painPoints: ["Фильтры по задачам работают медленнее при больших проектах.", "Не хватает шаблонов отчётов для руководителей."],
+          themes: ["Скорость работы", "Автоматизация", "Отчётность", "Мобильная версия"]
+        },
+        "Service desk": {
+          period: "Последние 30 дней",
+          kpis: [
+            { label: "NPS", value: "35", delta: "+2 п.п.", tone: "good" },
+            { label: "CSAT", value: "4.1 / 5", delta: "без изменений", tone: "good" },
+            { label: "Среднее время ответа", value: "1ч 48м", delta: "-12% MoM", tone: "good" },
+            { label: "Escalation rate", value: "14%", delta: "+3% MoM", tone: "warn" }
+          ],
+          positives: [
+            "Клиенты отмечают прозрачность статусов обращений.",
+            "База знаний снизила количество повторных вопросов.",
+            "Автоматические SLA-уведомления помогают не пропускать дедлайны."
+          ],
+          painPoints: ["Сложная настройка маршрутизации для новых команд.", "Нужны более гибкие дашборды по SLA и загрузке агентов."],
+          themes: ["SLA", "Маршрутизация", "База знаний", "Нагрузка агентов"]
+        },
+        Forms: {
+          period: "Последние 30 дней",
+          kpis: [
+            { label: "NPS", value: "47", delta: "+6 п.п.", tone: "good" },
+            { label: "CSAT", value: "4.6 / 5", delta: "+0.3", tone: "good" },
+            { label: "Conversion rate", value: "59%", delta: "+9% после обновления UI", tone: "good" },
+            { label: "Доля брошенных форм", value: "21%", delta: "-4% MoM", tone: "good" }
+          ],
+          positives: [
+            "Пользователям нравится новый визуальный конструктор и шаблоны.",
+            "Высокая оценка за предварительный просмотр на мобильных устройствах.",
+            "Интеграции с CRM сократили ручной ввод данных."
+          ],
+          painPoints: ["Нужны продвинутые условия в логике полей.", "Некоторые пользователи просят больше вариантов кастомизации темы."],
+          themes: ["Конструктор", "Интеграции", "Мобильность", "Кастомизация"]
+        }
+      };
+
+      const tabsContainer = document.getElementById("tabs");
+      const dashboardRoot = document.getElementById("dashboard");
+      let activeProduct = Object.keys(dashboards)[0];
+
+      function renderTabs() {
+        tabsContainer.innerHTML = "";
+
+        Object.keys(dashboards).forEach((name) => {
+          const button = document.createElement("button");
+          button.className = `tab ${name === activeProduct ? "active" : ""}`;
+          button.textContent = name;
+          button.type = "button";
+          button.addEventListener("click", () => {
+            activeProduct = name;
+            renderTabs();
+            renderDashboard();
+          });
+          tabsContainer.appendChild(button);
+        });
+      }
+
+      function renderDashboard() {
+        const data = dashboards[activeProduct];
+
+        const kpiCards = data.kpis
+          .map(
+            ({ label, value, delta, tone }) => `
+              <article class="card">
+                <h3 class="card-title">${label}</h3>
+                <div class="kpi-value">${value}</div>
+                <div class="delta ${tone}">${delta}</div>
+              </article>
+            `
+          )
+          .join("");
+
+        dashboardRoot.innerHTML = `
+          <article class="card">
+            <h2 class="section-title">${activeProduct} · ${data.period}</h2>
+            <div class="kpi-grid">${kpiCards}</div>
+          </article>
+
+          <article class="card">
+            <h2 class="section-title">Что пользователям нравится</h2>
+            <ul class="feedback-list">
+              ${data.positives.map((item) => `<li>${item}</li>`).join("")}
+            </ul>
+          </article>
+
+          <article class="card">
+            <h2 class="section-title">Точки роста</h2>
+            <ul class="feedback-list">
+              ${data.painPoints.map((item) => `<li>${item}</li>`).join("")}
+            </ul>
+          </article>
+
+          <article class="card">
+            <h2 class="section-title">Ключевые темы фидбека</h2>
+            <div class="tags">
+              ${data.themes.map((theme) => `<span class="tag">${theme}</span>`).join("")}
+            </div>
+          </article>
+        `;
+      }
+
+      renderTabs();
+      renderDashboard();
+    </script>
+  </body>
+</html>
