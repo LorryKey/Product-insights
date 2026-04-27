@@ -3,277 +3,242 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Product Feedback Dashboards</title>
+    <title>Tracker Feedback Dashboard</title>
     <style>
       :root {
         color-scheme: light;
-        --bg: #f5f7fb;
+        --bg: #f4f6fb;
         --card: #ffffff;
-        --text: #222b45;
-        --muted: #7d89a8;
-        --brand: #3366ff;
-        --brand-soft: #e8edff;
-        --border: #e7eaf3;
-        --good: #1f9d55;
-        --warn: #dd6b20;
+        --text: #1e2a3a;
+        --muted: #6f7d96;
+        --brand: #2f6bff;
+        --border: #e5eaf3;
       }
-
-      * {
-        box-sizing: border-box;
-      }
-
+      * { box-sizing: border-box; }
       body {
         margin: 0;
         font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         background: var(--bg);
         color: var(--text);
       }
-
-      .page {
-        max-width: 1120px;
-        margin: 0 auto;
-        padding: 32px 20px 40px;
-      }
-
-      h1 {
-        margin: 0 0 8px;
-        font-size: clamp(1.4rem, 1.2rem + 1.5vw, 2rem);
-      }
-
-      .subtitle {
-        margin: 0 0 24px;
+      .page { max-width: 1180px; margin: 0 auto; padding: 28px 18px 44px; }
+      h1 { margin: 0 0 6px; font-size: clamp(1.3rem, 1.1rem + 1.4vw, 2rem); }
+      .subtitle { margin: 0 0 18px; color: var(--muted); }
+      .notice {
+        border: 1px dashed var(--border);
+        border-radius: 10px;
+        background: #f9fbff;
+        padding: 10px 12px;
         color: var(--muted);
+        margin-bottom: 14px;
+        font-size: 0.9rem;
       }
-
-      .tabs {
-        display: flex;
-        gap: 8px;
-        background: #fff;
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 6px;
-        margin-bottom: 24px;
-        overflow-x: auto;
-      }
-
-      .tab {
-        border: 0;
-        border-radius: 9px;
-        padding: 10px 14px;
-        font-size: 0.95rem;
-        color: var(--muted);
-        background: transparent;
-        cursor: pointer;
-        white-space: nowrap;
-      }
-
-      .tab.active {
-        color: var(--brand);
-        background: var(--brand-soft);
-        font-weight: 600;
-      }
-
-      .dashboard {
-        display: grid;
-        gap: 16px;
-      }
-
-      .kpi-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-        gap: 12px;
-      }
-
-      .card {
+      .kpis { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 10px; margin-bottom: 14px; }
+      .kpi, .panel {
         background: var(--card);
         border: 1px solid var(--border);
-        border-radius: 14px;
+        border-radius: 12px;
         padding: 14px;
       }
-
-      .card-title {
-        margin: 0 0 8px;
-        font-size: 0.9rem;
-        color: var(--muted);
+      .kpi .label { color: var(--muted); font-size: .85rem; }
+      .kpi .value { font-size: 1.45rem; font-weight: 700; margin-top: 4px; }
+      .grid { display: grid; gap: 12px; grid-template-columns: repeat(12,1fr); }
+      .span-6 { grid-column: span 6; }
+      .span-12 { grid-column: span 12; }
+      @media (max-width: 900px) { .span-6 { grid-column: span 12; } }
+      h2 { margin: 0 0 10px; font-size: 1.05rem; }
+      table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+      th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--border); vertical-align: top; }
+      th { color: var(--muted); font-weight: 600; }
+      .bar-wrap { background: #f1f4fa; border-radius: 999px; height: 8px; overflow: hidden; }
+      .bar { background: linear-gradient(90deg, #5a8bff, #2f6bff); height: 100%; }
+      blockquote {
+        margin: 8px 0;
+        border-left: 3px solid #c9d7ff;
+        padding: 8px 10px;
+        border-radius: 0 8px 8px 0;
+        background: #f7f9ff;
+        color: #2a3950;
       }
-
-      .kpi-value {
-        font-size: 1.5rem;
-        font-weight: 700;
-      }
-
-      .delta {
-        margin-top: 8px;
-        font-size: 0.85rem;
-      }
-
-      .delta.good {
-        color: var(--good);
-      }
-
-      .delta.warn {
-        color: var(--warn);
-      }
-
-      .section-title {
-        margin: 2px 0 10px;
-        font-size: 1.05rem;
-      }
-
-      .feedback-list {
-        margin: 0;
-        padding-left: 18px;
-        line-height: 1.45;
-      }
-
-      .feedback-list li + li {
-        margin-top: 6px;
-      }
-
-      .tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .tag {
-        font-size: 0.82rem;
-        border: 1px solid var(--border);
-        background: #f9faff;
-        border-radius: 999px;
-        padding: 6px 10px;
-      }
+      ul { margin: 8px 0 0 18px; padding: 0; }
+      li + li { margin-top: 6px; }
+      .muted { color: var(--muted); }
+      .error { color: #be123c; background: #fff1f2; border: 1px solid #fecdd3; padding: 8px 10px; border-radius: 8px; }
     </style>
   </head>
   <body>
     <main class="page">
-      <h1>Дашборды продуктового фидбека</h1>
-      <p class="subtitle">Сводка ключевых пользовательских метрик и инсайтов по продуктам.</p>
+      <h1>Дашборд по опросу пользователей Tracker</h1>
+      <p class="subtitle">Автоматически построен на основе <code>tracker_feedback_codex.json</code>.</p>
 
-      <header class="tabs" id="tabs" aria-label="Выбор продукта"></header>
+      <section class="kpis" id="kpis"></section>
+      <div class="notice">Метрика в таблицах — количество упоминаний тем в открытых ответах. Один респондент может попадать в несколько тем.</div>
 
-      <section class="dashboard" id="dashboard" aria-live="polite"></section>
+      <section class="grid" id="dashboard"></section>
     </main>
 
     <script>
-      const dashboards = {
-        Tracker: {
-          period: "Последние 30 дней",
-          kpis: [
-            { label: "NPS", value: "42", delta: "+5 п.п. к прошлому месяцу", tone: "good" },
-            { label: "CSAT", value: "4.4 / 5", delta: "+0.2 за квартал", tone: "good" },
-            { label: "Запросов в саппорт", value: "126", delta: "-18% MoM", tone: "good" },
-            { label: "Feature adoption", value: "68%", delta: "+7% после релиза", tone: "good" }
-          ],
-          positives: [
-            "Пользователи отмечают удобный канбан и быстрый поиск задач.",
-            "Похвала за напоминания и интеграцию с календарем.",
-            "Команды стали чаще использовать автоматические правила статусов."
-          ],
-          painPoints: ["Фильтры по задачам работают медленнее при больших проектах.", "Не хватает шаблонов отчётов для руководителей."],
-          themes: ["Скорость работы", "Автоматизация", "Отчётность", "Мобильная версия"]
-        },
-        "Service desk": {
-          period: "Последние 30 дней",
-          kpis: [
-            { label: "NPS", value: "35", delta: "+2 п.п.", tone: "good" },
-            { label: "CSAT", value: "4.1 / 5", delta: "без изменений", tone: "good" },
-            { label: "Среднее время ответа", value: "1ч 48м", delta: "-12% MoM", tone: "good" },
-            { label: "Escalation rate", value: "14%", delta: "+3% MoM", tone: "warn" }
-          ],
-          positives: [
-            "Клиенты отмечают прозрачность статусов обращений.",
-            "База знаний снизила количество повторных вопросов.",
-            "Автоматические SLA-уведомления помогают не пропускать дедлайны."
-          ],
-          painPoints: ["Сложная настройка маршрутизации для новых команд.", "Нужны более гибкие дашборды по SLA и загрузке агентов."],
-          themes: ["SLA", "Маршрутизация", "База знаний", "Нагрузка агентов"]
-        },
-        Forms: {
-          period: "Последние 30 дней",
-          kpis: [
-            { label: "NPS", value: "47", delta: "+6 п.п.", tone: "good" },
-            { label: "CSAT", value: "4.6 / 5", delta: "+0.3", tone: "good" },
-            { label: "Conversion rate", value: "59%", delta: "+9% после обновления UI", tone: "good" },
-            { label: "Доля брошенных форм", value: "21%", delta: "-4% MoM", tone: "good" }
-          ],
-          positives: [
-            "Пользователям нравится новый визуальный конструктор и шаблоны.",
-            "Высокая оценка за предварительный просмотр на мобильных устройствах.",
-            "Интеграции с CRM сократили ручной ввод данных."
-          ],
-          painPoints: ["Нужны продвинутые условия в логике полей.", "Некоторые пользователи просят больше вариантов кастомизации темы."],
-          themes: ["Конструктор", "Интеграции", "Мобильность", "Кастомизация"]
-        }
+      const serviceThemes = [
+        ["Фильтры/поиск/сортировка", ["фильтр", "поиск", "сортиров", "избран"]],
+        ["Связи и иерархия задач", ["связ", "иерарх", "эпик", "подзадач", "завис"]],
+        ["Планирование (Гантт/спринты/версии)", ["гант", "спринт", "верс", "дорожн"]],
+        ["Отчётность и аналитика", ["отчет", "аналит", "дашборд", "статистик"]],
+        ["Автоматизации и workflow", ["автоматиза", "workflow", "воркфлоу", "переход"]],
+      ];
+
+      const boardCardThemes = [
+        ["Быстрые действия в карточке", ["копирован", "быстро", "приорит", "исполнител", "новой вкладке"]],
+        ["Конструктор досок и swimlane", ["конструктор дос", "свимлейн", "swimlane", "доск"]],
+        ["Markdown/вложения/превью", ["markdown", "формат", "вложен", "изображ", "картинк", "превью"]],
+        ["Конструктор карточек", ["конструктор карточ", "вид карточ", "карточек задач", "карточ"]],
+        ["Связи и подзадачи в карточках", ["связ", "подзадач", "завис"]],
+      ];
+
+      const blockerThemes = [
+        ["Слабые фильтры/поиск/сортировка", ["фильтр", "поиск", "сортиров"]],
+        ["Ограничения карточки (много кликов)", ["копирован", "быстро", "приорит", "редактир", "новой вкладке"]],
+        ["Проблемы Markdown/вложений", ["markdown", "формат", "вложен", "изображ", "картинк", "превью"]],
+        ["Приватность и права доступа", ["приват", "прав", "доступ"]],
+        ["Сложная настройка проектов/типов", ["сложн", "настройк", "переход"]],
+      ];
+
+      const quoteIds = {
+        service: [3, 2, 10],
+        board: [4, 3, 6, 5],
+        usage: [15, 31, 127, 120],
+        blockers: [3, 10, 5]
       };
 
-      const tabsContainer = document.getElementById("tabs");
-      const dashboardRoot = document.getElementById("dashboard");
-      let activeProduct = Object.keys(dashboards)[0];
+      const norm = (value) => (value || "").toString().toLowerCase();
+      const fields = ["missing_general_features", "missing_card_features", "dislikes", "other_usage"];
 
-      function renderTabs() {
-        tabsContainer.innerHTML = "";
-
-        Object.keys(dashboards).forEach((name) => {
-          const button = document.createElement("button");
-          button.className = `tab ${name === activeProduct ? "active" : ""}`;
-          button.textContent = name;
-          button.type = "button";
-          button.addEventListener("click", () => {
-            activeProduct = name;
-            renderTabs();
-            renderDashboard();
-          });
-          tabsContainer.appendChild(button);
-        });
+      function hasKeywords(text, keys) {
+        const low = norm(text);
+        return keys.some((k) => low.includes(k));
       }
 
-      function renderDashboard() {
-        const data = dashboards[activeProduct];
+      function countThemes(rows, themes, sourceFields) {
+        return themes
+          .map(([name, keys]) => {
+            let count = 0;
+            rows.forEach((row) => {
+              const hit = sourceFields.some((f) => row[f] && hasKeywords(row[f], keys));
+              if (hit) count += 1;
+            });
+            return { name, count };
+          })
+          .sort((a, b) => b.count - a.count);
+      }
 
-        const kpiCards = data.kpis
-          .map(
-            ({ label, value, delta, tone }) => `
-              <article class="card">
-                <h3 class="card-title">${label}</h3>
-                <div class="kpi-value">${value}</div>
-                <div class="delta ${tone}">${delta}</div>
-              </article>
-            `
-          )
-          .join("");
+      function getQuotes(rows, ids) {
+        return ids
+          .map((id) => rows.find((r) => r.id === id))
+          .filter(Boolean)
+          .map((r) => {
+            const text = fields.map((f) => r[f]).find((t) => t && t !== "-" && !/^описал|написал|уже отвечал/i.test(t));
+            return { id: r.id, text: text || "(цитата отсутствует)" };
+          });
+      }
 
-        dashboardRoot.innerHTML = `
-          <article class="card">
-            <h2 class="section-title">${activeProduct} · ${data.period}</h2>
-            <div class="kpi-grid">${kpiCards}</div>
-          </article>
+      function topUsage(rows) {
+        const usageRows = rows.filter((r) => r.other_usage && r.other_usage.trim());
+        return usageRows.map((r) => `id=${r.id}: ${r.other_usage}`);
+      }
 
-          <article class="card">
-            <h2 class="section-title">Что пользователям нравится</h2>
-            <ul class="feedback-list">
-              ${data.positives.map((item) => `<li>${item}</li>`).join("")}
-            </ul>
-          </article>
-
-          <article class="card">
-            <h2 class="section-title">Точки роста</h2>
-            <ul class="feedback-list">
-              ${data.painPoints.map((item) => `<li>${item}</li>`).join("")}
-            </ul>
-          </article>
-
-          <article class="card">
-            <h2 class="section-title">Ключевые темы фидбека</h2>
-            <div class="tags">
-              ${data.themes.map((theme) => `<span class="tag">${theme}</span>`).join("")}
-            </div>
-          </article>
+      function renderTable(items) {
+        const max = Math.max(...items.map((i) => i.count), 1);
+        return `
+          <table>
+            <thead><tr><th>Тема</th><th>Упоминаний</th><th style="width:34%">Вес</th></tr></thead>
+            <tbody>
+              ${items
+                .map((i) => {
+                  const pct = Math.round((i.count / max) * 100);
+                  return `<tr>
+                    <td>${i.name}</td>
+                    <td>${i.count}</td>
+                    <td><div class="bar-wrap"><div class="bar" style="width:${pct}%"></div></div></td>
+                  </tr>`;
+                })
+                .join("")}
+            </tbody>
+          </table>
         `;
       }
 
-      renderTabs();
-      renderDashboard();
+      function renderQuotes(quotes) {
+        return quotes.map((q) => `<blockquote>«${q.text}» <span class="muted">(id=${q.id})</span></blockquote>`).join("");
+      }
+
+      async function init() {
+        try {
+          const response = await fetch("tracker_feedback_codex.json");
+          if (!response.ok) throw new Error("Не удалось загрузить JSON");
+          const payload = await response.json();
+          const rows = payload.data || [];
+
+          const service = countThemes(rows, serviceThemes, ["missing_general_features", "dislikes"]);
+          const board = countThemes(rows, boardCardThemes, ["missing_general_features", "missing_card_features", "dislikes"]);
+          const blockers = countThemes(rows, blockerThemes, ["dislikes"]);
+          const usage = topUsage(rows);
+
+          document.getElementById("kpis").innerHTML = `
+            <article class="kpi"><div class="label">Всего ответов</div><div class="value">${rows.length}</div></article>
+            <article class="kpi"><div class="label">Ответов с dislikes</div><div class="value">${rows.filter((r) => r.dislikes).length}</div></article>
+            <article class="kpi"><div class="label">Ответов с missing_general_features</div><div class="value">${rows.filter((r) => r.missing_general_features).length}</div></article>
+            <article class="kpi"><div class="label">Ответов с missing_card_features</div><div class="value">${rows.filter((r) => r.missing_card_features).length}</div></article>
+          `;
+
+          document.getElementById("dashboard").innerHTML = `
+            <article class="panel span-6">
+              <h2>1) Топ востребованных функциональностей в сервисе</h2>
+              ${renderTable(service)}
+              <h2>Прямые цитаты</h2>
+              ${renderQuotes(getQuotes(rows, quoteIds.service))}
+            </article>
+
+            <article class="panel span-6">
+              <h2>2) Топ востребованных функциональностей в канбан-доске и карточках</h2>
+              ${renderTable(board)}
+              <h2>Прямые цитаты</h2>
+              ${renderQuotes(getQuotes(rows, quoteIds.board))}
+            </article>
+
+            <article class="panel span-6">
+              <h2>3) Как и для чего используют Tracker</h2>
+              <ul>${usage.map((item) => `<li>${item}</li>`).join("")}</ul>
+              <h2>Прямые цитаты</h2>
+              ${renderQuotes(getQuotes(rows, quoteIds.usage))}
+            </article>
+
+            <article class="panel span-6">
+              <h2>4) Сложности и блокеры</h2>
+              ${renderTable(blockers)}
+              <h2>Прямые цитаты</h2>
+              ${renderQuotes(getQuotes(rows, quoteIds.blockers))}
+            </article>
+
+            <article class="panel span-12">
+              <h2>5) JTBD, user story и выводы</h2>
+              <ul>
+                <li><b>Job 1:</b> Когда планирую релизы и спринты, хочу видеть иерархию и зависимости в timeline/Гантт, чтобы управлять рисками сроков.</li>
+                <li><b>Job 2:</b> Когда работаю с потоком задач на доске, хочу быстрые действия в карточке, чтобы снизить число кликов и ускорить исполнение.</li>
+                <li><b>Job 3:</b> Когда обсуждаю задачи в комментариях, хочу стабильный Markdown и удобные вложения, чтобы не терять контекст.</li>
+              </ul>
+              <p><b>User story:</b> Как руководитель/PM/исполнитель кросс-функциональной команды, я хочу настраиваемую канбан-доску и функциональные карточки (быстрые действия, зависимости, редактор и вложения), чтобы планировать, координировать и исполнять работу без потери скорости и прозрачности.</p>
+              <ul>
+                <li>Ключевой запрос пользователей — ускорение базового потока: найти → открыть → изменить → связать → отчитаться.</li>
+                <li>Канбан и карточка — основная UX-зона, где концентрируется ежедневная боль.</li>
+                <li>Не хватает управленческого слоя: иерархия, зависимости, планирование, отчётность.</li>
+              </ul>
+            </article>
+          `;
+        } catch (err) {
+          document.getElementById("dashboard").innerHTML = `<div class="panel span-12 error">Ошибка загрузки данных: ${err.message}</div>`;
+        }
+      }
+
+      init();
     </script>
   </body>
 </html>
