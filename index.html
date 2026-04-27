@@ -3,171 +3,224 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tracker Feedback Dashboard</title>
+    <title>Tracker Feedback — Product Insights Dashboard</title>
     <style>
       :root {
-        color-scheme: light;
-        --bg: #f4f6fb;
-        --card: #ffffff;
-        --text: #1e2a3a;
-        --muted: #6f7d96;
-        --brand: #2f6bff;
-        --border: #e5eaf3;
+        color-scheme: dark;
+        --bg: #090f1d;
+        --bg-soft: #101a2f;
+        --card: #121f38;
+        --card-2: #172947;
+        --text: #e6eeff;
+        --muted: #93a5c7;
+        --border: #263b63;
+        --brand: #5f8dff;
+        --brand-2: #3ad1ff;
+        --good: #34d399;
+        --warn: #f59e0b;
+        --bad: #fb7185;
+        --must: #ef4444;
+        --should: #f59e0b;
+        --could: #38bdf8;
+        --wont: #64748b;
       }
       * { box-sizing: border-box; }
       body {
         margin: 0;
         font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        background: var(--bg);
+        background: radial-gradient(circle at 20% -10%, #1a2950, #090f1d 45%);
         color: var(--text);
       }
-      .page { max-width: 1180px; margin: 0 auto; padding: 28px 18px 44px; }
-      h1 { margin: 0 0 6px; font-size: clamp(1.3rem, 1.1rem + 1.4vw, 2rem); }
-      .subtitle { margin: 0 0 18px; color: var(--muted); }
+      .page { max-width: 1320px; margin: 0 auto; padding: 24px 18px 42px; }
+      h1 { margin: 0 0 8px; font-size: clamp(1.4rem, 1rem + 1.8vw, 2.2rem); }
+      h2 { margin: 0 0 12px; font-size: 1.06rem; }
+      .subtitle { margin: 0 0 16px; color: var(--muted); }
       .notice {
-        border: 1px dashed var(--border);
-        border-radius: 10px;
-        background: #f9fbff;
-        padding: 10px 12px;
-        color: var(--muted);
-        margin-bottom: 14px;
-        font-size: 0.9rem;
-      }
-      .kpis { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 10px; margin-bottom: 14px; }
-      .kpi, .panel {
-        background: var(--card);
         border: 1px solid var(--border);
         border-radius: 12px;
-        padding: 14px;
+        padding: 10px 12px;
+        color: var(--muted);
+        background: linear-gradient(90deg, #142448, #12203a);
+        margin-bottom: 14px;
       }
-      .kpi .label { color: var(--muted); font-size: .85rem; }
-      .kpi .value { font-size: 1.45rem; font-weight: 700; margin-top: 4px; }
+      .kpis { display: grid; grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); gap: 10px; margin-bottom: 12px; }
+      .kpi, .panel {
+        background: linear-gradient(180deg, var(--card), var(--card-2));
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25);
+      }
+      .kpi .label { color: var(--muted); font-size: .82rem; }
+      .kpi .value { font-size: 1.45rem; font-weight: 750; margin-top: 4px; }
+      .kpi small { color: var(--muted); }
       .grid { display: grid; gap: 12px; grid-template-columns: repeat(12,1fr); }
+      .span-4 { grid-column: span 4; }
       .span-6 { grid-column: span 6; }
+      .span-8 { grid-column: span 8; }
       .span-12 { grid-column: span 12; }
-      @media (max-width: 900px) { .span-6 { grid-column: span 12; } }
-      h2 { margin: 0 0 10px; font-size: 1.05rem; }
-      table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+      @media (max-width: 980px) { .span-8, .span-6, .span-4 { grid-column: span 12; } }
+      .muted { color: var(--muted); }
+      table { width: 100%; border-collapse: collapse; font-size: .9rem; }
       th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--border); vertical-align: top; }
       th { color: var(--muted); font-weight: 600; }
-      .bar-wrap { background: #f1f4fa; border-radius: 999px; height: 8px; overflow: hidden; }
-      .bar { background: linear-gradient(90deg, #5a8bff, #2f6bff); height: 100%; }
-      blockquote {
+      .bar-wrap { background: #0f1d35; border-radius: 999px; height: 9px; overflow: hidden; }
+      .bar { background: linear-gradient(90deg, var(--brand-2), var(--brand)); height: 100%; }
+      .chip { display: inline-flex; border: 1px solid var(--border); border-radius: 999px; padding: 3px 9px; font-size: .74rem; color: var(--muted); margin-right: 6px; }
+      .heat {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .heat-row { display: grid; grid-template-columns: 180px 1fr 70px; align-items: center; gap: 8px; font-size: .88rem; }
+      .heat-cell { height: 10px; border-radius: 999px; background: #10213e; overflow: hidden; }
+      .heat-fill { height: 100%; background: linear-gradient(90deg, #1d4ed8, #38bdf8); }
+      .quote {
         margin: 8px 0;
-        border-left: 3px solid #c9d7ff;
+        border-left: 3px solid #3b82f6;
         padding: 8px 10px;
         border-radius: 0 8px 8px 0;
-        background: #f7f9ff;
-        color: #2a3950;
+        background: rgba(23, 47, 89, 0.55);
+        color: #d9e5ff;
       }
-      ul { margin: 8px 0 0 18px; padding: 0; }
-      li + li { margin-top: 6px; }
-      .muted { color: var(--muted); }
-      .error { color: #be123c; background: #fff1f2; border: 1px solid #fecdd3; padding: 8px 10px; border-radius: 8px; }
+      .split { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      @media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+      .badge { font-size: .74rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; }
+      .must { background: rgba(239,68,68,.2); color: #fca5a5; }
+      .should { background: rgba(245,158,11,.2); color: #fbd38d; }
+      .could { background: rgba(56,189,248,.2); color: #bae6fd; }
+      .wont { background: rgba(100,116,139,.2); color: #cbd5e1; }
+      .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+      .kanocard { border: 1px solid var(--border); border-radius: 12px; padding: 10px; background: #0f1b33; }
+      .error { color: #fecdd3; background: #3f1022; border: 1px solid #9f1239; padding: 8px 10px; border-radius: 8px; }
     </style>
   </head>
   <body>
     <main class="page">
-      <h1>Дашборд по опросу пользователей Tracker</h1>
-      <p class="subtitle">Автоматически построен на основе <code>tracker_feedback_codex.json</code>.</p>
+      <h1>Tracker Feedback Deep-Dive Dashboard</h1>
+      <p class="subtitle">107 качественных ответов. Углублённая аналитика: конкретика проблем/запросов, метрики, приоритизация MoSCoW + Value vs Effort + Kano.</p>
 
       <section class="kpis" id="kpis"></section>
-      <div class="notice">Метрика в таблицах — количество упоминаний тем в открытых ответах. Один респондент может попадать в несколько тем.</div>
+      <div class="notice">Метрики основаны на keyword-assisted разметке ответов. Один ответ может попадать в несколько категорий.</div>
 
       <section class="grid" id="dashboard"></section>
     </main>
 
     <script>
-      const serviceThemes = [
-        ["Фильтры/поиск/сортировка", ["фильтр", "поиск", "сортиров", "избран"]],
-        ["Связи и иерархия задач", ["связ", "иерарх", "эпик", "подзадач", "завис"]],
-        ["Планирование (Гантт/спринты/версии)", ["гант", "спринт", "верс", "дорожн"]],
-        ["Отчётность и аналитика", ["отчет", "аналит", "дашборд", "статистик"]],
-        ["Автоматизации и workflow", ["автоматиза", "workflow", "воркфлоу", "переход"]],
-      ];
-
-      const boardCardThemes = [
-        ["Быстрые действия в карточке", ["копирован", "быстро", "приорит", "исполнител", "новой вкладке"]],
-        ["Конструктор досок и swimlane", ["конструктор дос", "свимлейн", "swimlane", "доск"]],
-        ["Markdown/вложения/превью", ["markdown", "формат", "вложен", "изображ", "картинк", "превью"]],
-        ["Конструктор карточек", ["конструктор карточ", "вид карточ", "карточек задач", "карточ"]],
-        ["Связи и подзадачи в карточках", ["связ", "подзадач", "завис"]],
-      ];
-
-      const blockerThemes = [
-        ["Слабые фильтры/поиск/сортировка", ["фильтр", "поиск", "сортиров"]],
-        ["Ограничения карточки (много кликов)", ["копирован", "быстро", "приорит", "редактир", "новой вкладке"]],
-        ["Проблемы Markdown/вложений", ["markdown", "формат", "вложен", "изображ", "картинк", "превью"]],
-        ["Приватность и права доступа", ["приват", "прав", "доступ"]],
-        ["Сложная настройка проектов/типов", ["сложн", "настройк", "переход"]],
-      ];
-
-      const quoteIds = {
-        service: [3, 2, 10],
-        board: [4, 3, 6, 5],
-        usage: [15, 31, 127, 120],
-        blockers: [3, 10, 5]
-      };
-
-      const norm = (value) => (value || "").toString().toLowerCase();
       const fields = ["missing_general_features", "missing_card_features", "dislikes", "other_usage"];
+      const norm = (v) => (v || "").toString().toLowerCase();
+      const hasKeywords = (text, keys) => keys.some((k) => norm(text).includes(k));
 
-      function hasKeywords(text, keys) {
-        const low = norm(text);
-        return keys.some((k) => low.includes(k));
-      }
+      const problemCatalog = [
+        { name: "Сложная настройка проектов и workflow", keys: ["сложн", "настройк", "workflow", "воркфлоу", "переход", "статус"], weight: 5 },
+        { name: "Слабый поиск/фильтры/навигация", keys: ["поиск", "фильтр", "сортиров", "найти", "избран"], weight: 5 },
+        { name: "Нет хорошей визуализации планов (timeline/gantt)", keys: ["гант", "timeline", "дорожн", "спринт", "верс"], weight: 4 },
+        { name: "Шумные коммуникации и комментарии", keys: ["коммент", "уведомл", "шум", "дискус"], weight: 4 },
+        { name: "Слабая отчётность и дашборды", keys: ["отчет", "аналит", "дашборд", "статист"], weight: 4 },
+        { name: "Ограничения карточки: много кликов", keys: ["быстро", "клик", "копирован", "приорит", "новой вкладке"], weight: 3 },
+        { name: "Проблемы вложений/markdown", keys: ["markdown", "вложен", "изображ", "превью", "формат"], weight: 3 },
+        { name: "Производительность/стабильность", keys: ["тормоз", "лага", "медлен", "ошибк", "стабиль"], weight: 5 }
+      ];
 
-      function countThemes(rows, themes, sourceFields) {
-        return themes
-          .map(([name, keys]) => {
-            let count = 0;
-            rows.forEach((row) => {
-              const hit = sourceFields.some((f) => row[f] && hasKeywords(row[f], keys));
-              if (hit) count += 1;
-            });
-            return { name, count };
-          })
-          .sort((a, b) => b.count - a.count);
-      }
+      const requestCatalog = [
+        { name: "Универсальный поиск + recent + сохранённые фильтры", keys: ["поиск", "фильтр", "избран", "недав"], value: 5, effort: 3, kano: "Performance" },
+        { name: "Конструктор досок/карточек с шаблонами", keys: ["конструктор", "доск", "карточ", "swimlane"], value: 5, effort: 4, kano: "Performance" },
+        { name: "Roadmap/иерархия/зависимости", keys: ["иерарх", "эпик", "завис", "roadmap", "дерев"], value: 5, effort: 5, kano: "Delighter" },
+        { name: "Timeline/Gantt + критический путь", keys: ["гант", "timeline", "дорожн", "критичес"], value: 5, effort: 5, kano: "Delighter" },
+        { name: "Ролевые уведомления и резюме решений", keys: ["уведомл", "коммент", "решен", "рол"], value: 4, effort: 3, kano: "Must-be" },
+        { name: "Пакет управленческой аналитики", keys: ["отчет", "аналит", "дашборд", "метрик"], value: 5, effort: 4, kano: "Performance" },
+        { name: "Улучшение markdown/вложений", keys: ["markdown", "вложен", "изображ", "превью"], value: 3, effort: 2, kano: "Must-be" },
+        { name: "Техдолг по скорости и стабильности", keys: ["тормоз", "медлен", "ошибк", "стабиль"], value: 5, effort: 3, kano: "Must-be" }
+      ];
 
-      function getQuotes(rows, ids) {
-        return ids
-          .map((id) => rows.find((r) => r.id === id))
-          .filter(Boolean)
-          .map((r) => {
-            const text = fields.map((f) => r[f]).find((t) => t && t !== "-" && !/^описал|написал|уже отвечал/i.test(t));
-            return { id: r.id, text: text || "(цитата отсутствует)" };
+      function countByCatalog(rows, catalog, sourceFields = fields) {
+        return catalog.map((item) => {
+          let count = 0;
+          rows.forEach((row) => {
+            const hit = sourceFields.some((f) => row[f] && hasKeywords(row[f], item.keys));
+            if (hit) count += 1;
           });
+          const pct = rows.length ? Math.round((count / rows.length) * 100) : 0;
+          return { ...item, count, pct };
+        }).sort((a, b) => b.count - a.count);
       }
 
-      function topUsage(rows) {
-        const usageRows = rows.filter((r) => r.other_usage && r.other_usage.trim());
-        return usageRows.map((r) => `id=${r.id}: ${r.other_usage}`);
-      }
-
-      function renderTable(items) {
+      function renderTopTable(items, { showPriority = false } = {}) {
         const max = Math.max(...items.map((i) => i.count), 1);
         return `
           <table>
-            <thead><tr><th>Тема</th><th>Упоминаний</th><th style="width:34%">Вес</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Тема</th><th>Упомин.</th><th>% респонд.</th><th style="width:30%">Интенсивность</th>${showPriority ? "<th>Приоритет</th>" : ""}
+              </tr>
+            </thead>
             <tbody>
-              ${items
-                .map((i) => {
-                  const pct = Math.round((i.count / max) * 100);
-                  return `<tr>
-                    <td>${i.name}</td>
-                    <td>${i.count}</td>
-                    <td><div class="bar-wrap"><div class="bar" style="width:${pct}%"></div></div></td>
-                  </tr>`;
-                })
-                .join("")}
+              ${items.map((i) => {
+                const p = Math.round((i.count / max) * 100);
+                const priority = i.priorityTag ? `<span class="badge ${i.priorityTag.toLowerCase()}">${i.priorityTag}</span>` : "";
+                return `<tr><td>${i.name}</td><td>${i.count}</td><td>${i.pct}%</td><td><div class="bar-wrap"><div class="bar" style="width:${p}%"></div></div></td>${showPriority ? `<td>${priority}</td>` : ""}</tr>`;
+              }).join("")}
             </tbody>
-          </table>
-        `;
+          </table>`;
       }
 
-      function renderQuotes(quotes) {
-        return quotes.map((q) => `<blockquote>«${q.text}» <span class="muted">(id=${q.id})</span></blockquote>`).join("");
+      function renderHeat(items) {
+        const max = Math.max(...items.map((i) => i.count), 1);
+        return `<div class="heat">${items.map((i) => {
+          const p = Math.round((i.count / max) * 100);
+          return `<div class="heat-row"><div>${i.name}</div><div class="heat-cell"><div class="heat-fill" style="width:${p}%"></div></div><div>${i.count} (${i.pct}%)</div></div>`;
+        }).join("")}</div>`;
+      }
+
+      function pickQuotes(rows, pattern, limit = 2) {
+        return rows
+          .filter((r) => fields.some((f) => r[f] && hasKeywords(r[f], pattern)))
+          .slice(0, limit)
+          .map((r) => {
+            const txt = fields.map((f) => r[f]).find((t) => t && t !== "-");
+            return `<div class="quote">«${txt}» <span class="muted">(id=${r.id})</span></div>`;
+          }).join("");
+      }
+
+      function moscowTag(item) {
+        const score = (item.count * item.value) / Math.max(item.effort, 1);
+        if (score >= 42) return "Must";
+        if (score >= 28) return "Should";
+        if (score >= 16) return "Could";
+        return "Won't";
+      }
+
+      function prioritizedRequests(rows) {
+        const counted = countByCatalog(rows, requestCatalog, ["missing_general_features", "missing_card_features", "dislikes"]);
+        return counted.map((i) => {
+          const vve = ((i.value * i.count) / Math.max(i.effort, 1)).toFixed(1);
+          const m = moscowTag(i);
+          return {
+            ...i,
+            valueEffort: Number(vve),
+            priorityTag: m,
+            kanoLabel: i.kano,
+            totalScore: i.valueEffort + (m === "Must" ? 20 : m === "Should" ? 10 : m === "Could" ? 5 : 0) + (i.kano === "Must-be" ? 8 : i.kano === "Performance" ? 6 : 4)
+          };
+        }).sort((a, b) => b.totalScore - a.totalScore);
+      }
+
+      function renderPriorityTable(items) {
+        return `
+          <table>
+            <thead><tr><th>Инициатива</th><th>MoSCoW</th><th>Value</th><th>Effort</th><th>V/E</th><th>Kano</th><th>Итог</th></tr></thead>
+            <tbody>
+              ${items.map((i) => `<tr>
+                <td>${i.name}</td>
+                <td><span class="badge ${i.priorityTag.toLowerCase()}">${i.priorityTag}</span></td>
+                <td>${i.value}</td>
+                <td>${i.effort}</td>
+                <td>${i.valueEffort}</td>
+                <td>${i.kanoLabel}</td>
+                <td><b>${i.totalScore.toFixed(1)}</b></td>
+              </tr>`).join("")}
+            </tbody>
+          </table>`;
       }
 
       async function init() {
@@ -177,59 +230,84 @@
           const payload = await response.json();
           const rows = payload.data || [];
 
-          const service = countThemes(rows, serviceThemes, ["missing_general_features", "dislikes"]);
-          const board = countThemes(rows, boardCardThemes, ["missing_general_features", "missing_card_features", "dislikes"]);
-          const blockers = countThemes(rows, blockerThemes, ["dislikes"]);
-          const usage = topUsage(rows);
+          const problems = countByCatalog(rows, problemCatalog, ["dislikes", "missing_general_features", "missing_card_features"]);
+          const reqs = prioritizedRequests(rows);
+
+          const dislikesFilled = rows.filter((r) => norm(r.dislikes).trim()).length;
+          const generalFilled = rows.filter((r) => norm(r.missing_general_features).trim()).length;
+          const cardFilled = rows.filter((r) => norm(r.missing_card_features).trim()).length;
+          const usageFilled = rows.filter((r) => norm(r.other_usage).trim()).length;
+          const highPain = problems.slice(0, 3).reduce((acc, x) => acc + x.count, 0);
 
           document.getElementById("kpis").innerHTML = `
-            <article class="kpi"><div class="label">Всего ответов</div><div class="value">${rows.length}</div></article>
-            <article class="kpi"><div class="label">Ответов с dislikes</div><div class="value">${rows.filter((r) => r.dislikes).length}</div></article>
-            <article class="kpi"><div class="label">Ответов с missing_general_features</div><div class="value">${rows.filter((r) => r.missing_general_features).length}</div></article>
-            <article class="kpi"><div class="label">Ответов с missing_card_features</div><div class="value">${rows.filter((r) => r.missing_card_features).length}</div></article>
+            <article class="kpi"><div class="label">Всего ответов</div><div class="value">${rows.length}</div><small>База для всех долей</small></article>
+            <article class="kpi"><div class="label">Сигналов о проблемах</div><div class="value">${dislikesFilled}</div><small>${Math.round((dislikesFilled / rows.length) * 100)}% с dislikes</small></article>
+            <article class="kpi"><div class="label">Сигналов о недостающем функционале</div><div class="value">${generalFilled + cardFilled}</div><small>general + card features</small></article>
+            <article class="kpi"><div class="label">High pain coverage (Top-3)</div><div class="value">${highPain}</div><small>суммарные упоминания болей</small></article>
+            <article class="kpi"><div class="label">Ответов с контекстом использования</div><div class="value">${usageFilled}</div><small>${Math.round((usageFilled / rows.length) * 100)}%</small></article>
+            <article class="kpi"><div class="label">Must инициатив (MoSCoW)</div><div class="value">${reqs.filter((r) => r.priorityTag === "Must").length}</div><small>к запуску в первую очередь</small></article>
           `;
 
           document.getElementById("dashboard").innerHTML = `
-            <article class="panel span-6">
-              <h2>1) Топ востребованных функциональностей в сервисе</h2>
-              ${renderTable(service)}
-              <h2>Прямые цитаты</h2>
-              ${renderQuotes(getQuotes(rows, quoteIds.service))}
+            <article class="panel span-8">
+              <h2>1) Топ проблем (детализировано)</h2>
+              ${renderTopTable(problems)}
+              <div class="split">
+                <div>
+                  <h2>Конкретика: поиск и навигация</h2>
+                  ${pickQuotes(rows, ["поиск", "фильтр", "сортиров"], 2)}
+                </div>
+                <div>
+                  <h2>Конкретика: настройка и workflow</h2>
+                  ${pickQuotes(rows, ["сложн", "настройк", "workflow", "переход"], 2)}
+                </div>
+              </div>
             </article>
 
-            <article class="panel span-6">
-              <h2>2) Топ востребованных функциональностей в канбан-доске и карточках</h2>
-              ${renderTable(board)}
-              <h2>Прямые цитаты</h2>
-              ${renderQuotes(getQuotes(rows, quoteIds.board))}
-            </article>
-
-            <article class="panel span-6">
-              <h2>3) Как и для чего используют Tracker</h2>
-              <ul>${usage.map((item) => `<li>${item}</li>`).join("")}</ul>
-              <h2>Прямые цитаты</h2>
-              ${renderQuotes(getQuotes(rows, quoteIds.usage))}
-            </article>
-
-            <article class="panel span-6">
-              <h2>4) Сложности и блокеры</h2>
-              ${renderTable(blockers)}
-              <h2>Прямые цитаты</h2>
-              ${renderQuotes(getQuotes(rows, quoteIds.blockers))}
+            <article class="panel span-4">
+              <h2>2) Heatmap проблем</h2>
+              ${renderHeat(problems.slice(0, 6))}
+              <p class="muted">Чем длиннее полоса, тем чаще тема упоминается в негативных/пробельных ответах.</p>
             </article>
 
             <article class="panel span-12">
-              <h2>5) JTBD, user story и выводы</h2>
+              <h2>3) Приоритизация доработок: MoSCoW + Value vs Effort + Kano</h2>
+              <div class="legend">
+                <span class="badge must">Must</span>
+                <span class="badge should">Should</span>
+                <span class="badge could">Could</span>
+                <span class="badge wont">Won't</span>
+                <span class="chip">Формула: V/E = (Value × mentions)/Effort</span>
+              </div>
+              ${renderPriorityTable(reqs)}
+            </article>
+
+            <article class="panel span-6">
+              <h2>4) Priority backlog (что делать в каком порядке)</h2>
+              <ol>
+                ${reqs.slice(0, 6).map((i) => `<li><b>${i.name}</b> — <span class="badge ${i.priorityTag.toLowerCase()}">${i.priorityTag}</span>, Kano: ${i.kanoLabel}, score ${i.totalScore.toFixed(1)}</li>`).join("")}
+              </ol>
+              <p class="muted">Рекомендуем релизить волнами: Wave 1 = Must-be + высокий V/E, Wave 2 = Performance, Wave 3 = Delighters.</p>
+            </article>
+
+            <article class="panel span-6">
+              <h2>5) KPI-контур для контроля эффекта</h2>
               <ul>
-                <li><b>Job 1:</b> Когда планирую релизы и спринты, хочу видеть иерархию и зависимости в timeline/Гантт, чтобы управлять рисками сроков.</li>
-                <li><b>Job 2:</b> Когда работаю с потоком задач на доске, хочу быстрые действия в карточке, чтобы снизить число кликов и ускорить исполнение.</li>
-                <li><b>Job 3:</b> Когда обсуждаю задачи в комментариях, хочу стабильный Markdown и удобные вложения, чтобы не терять контекст.</li>
+                <li><b>TTR поиска задачи</b> (median sec): цель -30%.</li>
+                <li><b>Time-to-configure board/workflow</b>: цель -40%.</li>
+                <li><b>Dependency risk visibility</b> (% задач с явными зависимостями): цель +25 п.п.</li>
+                <li><b>Notification relevance</b> (action/open rate): цель +20%.</li>
+                <li><b>Report prep time для PM/Lead</b>: цель -35%.</li>
+                <li><b>Stability</b> (UI error rate / p95 latency): цель -30%.</li>
               </ul>
-              <p><b>User story:</b> Как руководитель/PM/исполнитель кросс-функциональной команды, я хочу настраиваемую канбан-доску и функциональные карточки (быстрые действия, зависимости, редактор и вложения), чтобы планировать, координировать и исполнять работу без потери скорости и прозрачности.</p>
+            </article>
+
+            <article class="panel span-12">
+              <h2>6) JTBD-вывод в формате действий</h2>
               <ul>
-                <li>Ключевой запрос пользователей — ускорение базового потока: найти → открыть → изменить → связать → отчитаться.</li>
-                <li>Канбан и карточка — основная UX-зона, где концентрируется ежедневная боль.</li>
-                <li>Не хватает управленческого слоя: иерархия, зависимости, планирование, отчётность.</li>
+                <li><b>Job: Планирование</b> → roadmap hierarchy + gantt/dependency как must-have для руководителей программ.</li>
+                <li><b>Job: Ежедневное исполнение</b> → мгновенный поиск, быстрые действия в карточке и более простой workflow setup.</li>
+                <li><b>Job: Управленческая коммуникация</b> → дашборды прогресса и прогнозов без ручного экспорта.</li>
               </ul>
             </article>
           `;
